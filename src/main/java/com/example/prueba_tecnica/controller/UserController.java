@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-// Rutas de la API para las operaciones sobre la entidad User.
+// Rutas de la API para las operaciones sobre la entidad User
 @RestController
 @RequestMapping()
 public class UserController {
@@ -20,7 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Exposición de la lista de usuarios.
+    // Exposición de la lista de usuarios
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(
             @RequestParam(required = false) String sortedBy,
@@ -28,34 +28,27 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers(sortedBy, filter));
     }
 
-    // Registro de un nuevo usuario en el sistema.
+    // Registro de un nuevo usuario en el sistema
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        try {
-            return ResponseEntity.ok(userService.createUser(user));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // El GlobalExceptionHandler se encarga de atrapar las excepciones ahora
+        return ResponseEntity.ok(userService.createUser(user));
     }
 
-    // Modificación parcial de los datos de un usuario.
+    // Modificación parcial de los datos de un usuario
     @PatchMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User updates) {
-        try {
-            return ResponseEntity.ok(userService.updateUser(id, updates));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(userService.updateUser(id, updates));
     }
 
-    // Eliminación de un registro de usuario.
+    // Eliminación de un registro de usuario
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Punto de acceso para la autenticación de usuarios.
+    // Punto de acceso para la autenticación de usuarios
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         boolean authenticated = userService.authenticate(loginRequest.getTax_id(), loginRequest.getPassword());
