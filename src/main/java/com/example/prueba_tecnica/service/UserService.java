@@ -136,13 +136,16 @@ public class UserService {
 
         if (fieldValue == null) return false;
 
-        // Ignora el codigo de país (lada) si existe y limpiamos el formato.
+        // Filtro inteligente para reconocer si considera lada
         if (attribute.equals("phone")) {
-            // Elimina el patrón de lada (ej. "+52 ", "+1 ") al inicio de la cadena
-            fieldValue = fieldValue.replaceFirst("^\\+\\d{1,3}\\s?", "");
-
-            fieldValue = fieldValue.replaceAll("\\D", "");
-            value = value.replaceAll("\\D", "");
+            if (value.trim().startsWith("+")) {                                   // Busca "+" al inicio
+                fieldValue = fieldValue.replaceAll("\\s+", "");
+                value = value.replaceAll("\\s+", "");
+            } else {
+                fieldValue = fieldValue.replaceFirst("^\\+\\d{1,3}\\s?", "");
+                fieldValue = fieldValue.replaceAll("\\D", "");
+                value = value.replaceAll("\\D", "");
+            }
         }
 
         switch (operator) {
