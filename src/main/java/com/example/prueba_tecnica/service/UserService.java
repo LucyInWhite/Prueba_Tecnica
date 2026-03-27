@@ -18,7 +18,7 @@ public class UserService {
 
     private final List<User> users = new CopyOnWriteArrayList<>();
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final DateTimeFormatter MADAGASCAR_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm").withZone(ZoneId.of("Indian/Antananarivo"));
 
 
     public UserService() {
@@ -131,9 +131,7 @@ public class UserService {
             case "phone": fieldValue = user.getPhone(); break;
             case "tax_id": fieldValue = user.getTax_id(); break;
             case "created_at":
-                fieldValue = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
-                        .withZone(ZoneId.of("Indian/Antananarivo"))
-                        .format(user.getCreated_at());
+                fieldValue = MADAGASCAR_FORMATTER.format(user.getCreated_at());
                 break;
         }
 
