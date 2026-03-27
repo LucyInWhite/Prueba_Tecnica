@@ -30,8 +30,7 @@ public class UserService {
                 "+1 55 555 555 55",
                 "7c4a8d09ca3762af61e59520943dc26494f8941b",
                 "AARR990101XXX",
-                ZonedDateTime.of(2026, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")),
-                List.of(
+                ZonedDateTime.of(2026, 1, 1, 0, 0, 0, 0, ZoneId.of("Indian/Antananarivo")),                List.of(
                         new Address(1, "workaddress", "street No. 1", "UK"),
                         new Address(2, "homeaddress", "street No. 2", "AU")
                 )
