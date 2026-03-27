@@ -84,6 +84,10 @@ public class UserService {
         if (!user.getPhone().matches("^\\+\\d{1,3}\\s\\d{2}\\s\\d{3}\\s\\d{3}\\s\\d{2}$") && !user.getPhone().replaceAll("\\D", "").matches("^\\d{10,}$")) {
             throw new IllegalArgumentException("Phone must pass formatting validations");
         }
+        // Obligar a que exista "homeaddress"
+        if (user.getAddresses() == null || user.getAddresses().stream().noneMatch(a -> "homeaddress".equalsIgnoreCase(a.getName()))) {
+            throw new IllegalArgumentException("User must provide at least one address named 'homeaddress'");
+        }
     }
 
     // Retorno de usuarios con soporte para filtrado y ordenamiento dinámico.
