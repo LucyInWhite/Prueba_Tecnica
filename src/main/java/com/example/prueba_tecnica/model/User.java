@@ -1,6 +1,8 @@
 package com.example.prueba_tecnica.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,11 +17,16 @@ public class User {
     private String password;
 
     private String tax_id;
-    private String created_at;
+
+    // Internamente es UTC, pero se formatea a Madagascar al serializar el JSON.
+    //Antananarivo es la capital de Madagascar
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm", timezone = "Indian/Antananarivo")
+    private ZonedDateTime created_at;
+
     private List<Address> addresses;
 
     public User() {}
-    public User(UUID id, String email, String name, String phone, String password, String tax_id, String created_at, List<Address> addresses) {
+    public User(UUID id, String email, String name, String phone, String password, String tax_id, ZonedDateTime created_at, List<Address> addresses) {
         this.id = id; this.email = email; this.name = name; this.phone = phone;
         this.password = password; this.tax_id = tax_id; this.created_at = created_at; this.addresses = addresses;
     }
@@ -36,8 +43,8 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public String getTax_id() { return tax_id; }
     public void setTax_id(String tax_id) { this.tax_id = tax_id; }
-    public String getCreated_at() { return created_at; }
-    public void setCreated_at(String created_at) { this.created_at = created_at; }
+    public ZonedDateTime getCreated_at() { return created_at; }
+    public void setCreated_at(ZonedDateTime created_at) { this.created_at = created_at; }
     public List<Address> getAddresses() { return addresses; }
     public void setAddresses(List<Address> addresses) { this.addresses = addresses; }
 }

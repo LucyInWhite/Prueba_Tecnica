@@ -30,7 +30,7 @@ public class UserService {
                 "+1 55 555 555 55",
                 "7c4a8d09ca3762af61e59520943dc26494f8941b",
                 "AARR990101XXX",
-                "01-01-2026 00:00:00",
+                ZonedDateTime.of(2026, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")),
                 List.of(
                         new Address(1, "workaddress", "street No. 1", "UK"),
                         new Address(2, "homeaddress", "street No. 2", "AU")
@@ -45,7 +45,7 @@ public class UserService {
                 "+1 57 123 456 78",
                 EncryptionUtil.encryptPassword("pass2"),
                 "BBBB990101XX2",
-                getMadagascarTime(),
+                ZonedDateTime.of(2026, 3, 13, 5, 0, 0, 2, ZoneId.of("UTC")),
                 List.of(
                         new Address(3, "workaddress", "street No. 3", "MX"),
                         new Address(4, "homeaddress", "street No. 4", "AU")
@@ -60,7 +60,7 @@ public class UserService {
                 "+52 55 987 654 32",
                 EncryptionUtil.encryptPassword("pass3"),
                 "CCCC990101XX3",
-                "28-02-2026 00:00",
+                ZonedDateTime.of(2026, 2, 28, 0, 30, 8, 0, ZoneId.of("UTC")),
                 List.of(
                         new Address(5, "workaddress", "street No. 7", "UK"),
                         new Address(6, "homeaddress", "street No. 2", "UK")
@@ -68,10 +68,9 @@ public class UserService {
         ));
     }
 
-    // Obtención de la fecha actual en la zona horaria requerida.
-    private String getMadagascarTime() {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Indian/Antananarivo"));
-        return now.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+    // Obtención de la fecha en UTC para almacenamiento interno seguro.
+    private ZonedDateTime getUtcTime() {
+        return ZonedDateTime.now(ZoneId.of("UTC"));
     }
 
     // Reglas de negocio para la integridad de los datos del usuario.
@@ -111,9 +110,7 @@ public class UserService {
                     case "phone": return u1.getPhone().compareTo(u2.getPhone());
                     case "tax_id": return u1.getTax_id().compareTo(u2.getTax_id());
                     case "created_at":
-                        // Conversión de texto a fecha real para ordenamiento cronologico.
-                        return java.time.LocalDateTime.parse(u1.getCreated_at(), DATE_FORMATTER)
-                                .compareTo(java.time.LocalDateTime.parse(u2.getCreated_at(), DATE_FORMATTER));
+                        return u1.getCreated_at().compareTo(u2.getCreated_at());
                     default: return 0;
                 }
             });
@@ -130,7 +127,11 @@ public class UserService {
             case "name": fieldValue = user.getName(); break;
             case "phone": fieldValue = user.getPhone(); break;
             case "tax_id": fieldValue = user.getTax_id(); break;
-            case "created_at": fieldValue = user.getCreated_at(); break;
+            case "created_at":
+                fieldValue = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+                        .withZone(ZoneId.of("Indian/Antananarivo"))
+                        .format(user.getCreated_at());
+                break;
         }
 
         if (fieldValue == null) return false;
@@ -157,7 +158,7 @@ public class UserService {
         validateUser(user);
         user.setId(UUID.randomUUID());
         user.setPassword(EncryptionUtil.encryptPassword(user.getPassword()));
-        user.setCreated_at(getMadagascarTime());
+        user.setCreated_at(getUtcTime());
         users.add(user);
         return user;
     }
