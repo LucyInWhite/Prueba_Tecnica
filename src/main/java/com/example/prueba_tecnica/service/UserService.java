@@ -28,7 +28,7 @@ public class UserService {
                 "user1@mail.com",
                 "user1",
                 "+1 55 555 555 55",
-                "7c4a8d09ca3762af61e59520943dc26494f8941b",
+                EncryptionUtil.encryptPassword("7c4a8d09ca3762af61e59520943dc26494f8941b"),
                 "AARR990101XXX",
                 ZonedDateTime.of(2026, 1, 1, 0, 0, 0, 0, ZoneId.of("Indian/Antananarivo")),                List.of(
                         new Address(1, "workaddress", "street No. 1", "UK"),
