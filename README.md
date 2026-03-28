@@ -113,11 +113,11 @@ Para desplegar la aplicación en un contenedor, asegúrate de tener Docker Deskt
     ```
 2.  **Construir la imagen:**
     ```bash
-    docker build -t prueba-tecnica .
+    docker build -t nombre_raiz .
     ```
 3.  **Iniciar el contenedor:**
     ```bash
-    docker run -p 8080:8080 prueba-tecnica
+    docker run -p 8080:8080 nombre_raiz
     ```
 
 ---
