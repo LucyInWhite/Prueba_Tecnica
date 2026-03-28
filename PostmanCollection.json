@@ -1,0 +1,448 @@
+{
+  "info": {
+    "_postman_id": "70130be3-0cc5-49e8-b54e-a700fe334698",
+    "name": "Prueba_Tecnica",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53403750",
+    "_collection_link": "https://go.postman.co/collection/53403750-70130be3-0cc5-49e8-b54e-a700fe334698?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Orden por nombre",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Guardar un id para PATCH\r",
+              "var jsonData = pm.response.json();\r",
+              "pm.collectionVariables.set(\"id_editar\", jsonData[0].id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users?sortedBy=name",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "sortedBy",
+              "value": "name"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Orden por fecha",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "pm.collectionVariables.set(\"id_borrar\", jsonData[0].id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users?sortedBy=created_at",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "sortedBy",
+              "value": "created_at"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Nombres con user",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users?filter=name+co+user",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "filter",
+              "value": "name+co+user"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Correos con terminacion mail",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users?filter=email+ew+mail.com",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "filter",
+              "value": "email+ew+mail.com"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Telefonos mexicanos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users?filter=phone+sw+%2B52",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "filter",
+              "value": "phone+sw+%2B52"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Telefono 555",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users?filter=phone+sw+555",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "filter",
+              "value": "phone+sw+555"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario con RFC especifico",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users?filter=tax_id+eq+AARR990101XXX",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ],
+          "query": [
+            {
+              "key": "filter",
+              "value": "tax_id+eq+AARR990101XXX"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Añadir Usuario",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"estocastica@mail.com\",\r\n  \"name\": \"Estocastica\",\r\n  \"phone\": \"+1 1234567890\",\r\n  \"password\": \"contraseña1234\",\r\n  \"tax_id\": \"FFFF990101XX7\",\r\n  \"addresses\": [\r\n    {\r\n      \"name\": \"homeaddress\",\r\n      \"street\": \"Morelos\",\r\n      \"country_code\": \"MX\"\r\n    }\r\n    \r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RFC_invalido",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"usuario4@mail.com\",\r\n  \"name\": \"usuario4\",\r\n  \"phone\": \"+52 22 123 456 78\",\r\n  \"password\": \"contraseña1234\",\r\n  \"tax_id\": \"XX4\",\r\n  \"addresses\": [\r\n    {\r\n      \"name\": \"homeaddress\",\r\n      \"street\": \"Insurgentes\",\r\n      \"country_code\": \"MX\"\r\n    },\r\n    {\r\n      \"name\": \"workaddress\",\r\n      \"street\": \"Benito Juarez\",\r\n      \"country_code\": \"MX\"\r\n    }\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Telefono_Invalido",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"usuario4@mail.com\",\r\n  \"name\": \"usuario4\",\r\n  \"phone\": \"2 22 123 456\",\r\n  \"password\": \"contraseña1234\",\r\n  \"tax_id\": \"AAAA991010XX5\",\r\n  \"addresses\": [\r\n    {\r\n      \"name\": \"homeaddress\",\r\n      \"street\": \"Insurgentes\",\r\n      \"country_code\": \"MX\"\r\n    },\r\n    {\r\n      \"name\": \"workaddress\",\r\n      \"street\": \"Benito Juarez\",\r\n      \"country_code\": \"MX\"\r\n    }\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RFC_Unico",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"usuario4@mail.com\",\r\n  \"name\": \"usuario4\",\r\n  \"phone\": \"+52 22 123 456 78\",\r\n  \"password\": \"contraseña1234\",\r\n  \"tax_id\": \"AARR990101XXX\",\r\n  \"addresses\": [\r\n    {\r\n      \"name\": \"homeaddress\",\r\n      \"street\": \"Insurgentes\",\r\n      \"country_code\": \"MX\"\r\n    },\r\n    {\r\n      \"name\": \"workaddress\",\r\n      \"street\": \"Benito Juarez\",\r\n      \"country_code\": \"MX\"\r\n    }\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Direccion_Necesaria",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"usuario4@mail.com\",\r\n  \"name\": \"usuario4\",\r\n  \"phone\": \"+52 22 123 456 78\",\r\n  \"password\": \"contraseña1234\",\r\n  \"tax_id\": \"EEEE990101XX8\"\r\n  \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"tax_id\": \"BBBB990101XX2\",\r\n  \"password\": \"pass2\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Editar usuario",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Nombre Modificado\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users/{{id_editar}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users",
+            "{{id_editar}}"
+          ]
+        },
+        "description": "Es necesario ejecutar la petición \"Orden por nombre\" primero para que Postman guarde el ID automáticamente. También puedes escribir un ID fijo en la URL manualmente."
+      },
+      "response": []
+    },
+    {
+      "name": "Borrar registro",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users/{{id_borrar}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users",
+            "{{id_borrar}}"
+          ]
+        },
+        "description": "Es necesario ejecutar la petición \"Orden por fecha\" primero para que Postman guarde el ID automáticamente. También puedes escribir un ID fijo en la URL manualmente."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "mi_uuid",
+      "value": ""
+    },
+    {
+      "key": "id_editar",
+      "value": ""
+    },
+    {
+      "key": "id_borrar",
+      "value": ""
+    }
+  ]
+}
