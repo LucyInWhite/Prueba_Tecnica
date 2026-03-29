@@ -15,7 +15,7 @@ public class EncryptionUtil {
 
      private static String SECRET_KEY;
 
-    // Spring inyectará el valor del .env aquí
+    // Spring inyectara el valor del .env aqui
     @Value("${SECRET_KEY}")
     public void setSecretKey(String secretKey) {
         EncryptionUtil.SECRET_KEY = secretKey;
@@ -23,7 +23,7 @@ public class EncryptionUtil {
 
     // Encriptación de cadenas mediante el algoritmo AES-256
     public static String encryptPassword(String password) {
-        // Evitamos un NullPointerException si intentan encriptar una contraseña vacía
+        // Evitamos un NullPointerException si intentan encriptar una contraseña vacia
         if (password == null) return null;
 
         try {

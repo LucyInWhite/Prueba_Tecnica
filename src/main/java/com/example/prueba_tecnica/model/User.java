@@ -2,30 +2,53 @@ package com.example.prueba_tecnica.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
-// Entidad principal de usuario del sistema.
+// entidad principal de usuario del sistema
+@Entity
+@Table(name = "users")
 public class User {
+
+    // Generación automatica de UUIDs en la base de datos
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String phone;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false)
     private String password;
 
+    //aseguramos que el RFC sea unico a nivel bd
+    @Column(unique = true, nullable = false)
     private String tax_id;
 
-    // Internamente es UTC, pero se formatea a Madagascar al serializar el JSON.
+    // Internamente es UTC, pero se formatea a Madagascar al serializar el JSON
     //Antananarivo es la capital de Madagascar
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm", timezone = "Indian/Antananarivo")
+    @Column(nullable = false)
     private ZonedDateTime created_at;
 
+    // Aquí hacemos el cruce relacional: un usuario tiene mas de una direccion
+    // "cascade" hace que si se guarda/borra un usuario se guardan/borran sus direcciones tambien
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
     private List<Address> addresses;
 
     public User() {}
+
     public User(UUID id, String email, String name, String phone, String password, String tax_id, ZonedDateTime created_at, List<Address> addresses) {
         this.id = id; this.email = email; this.name = name; this.phone = phone;
         this.password = password; this.tax_id = tax_id; this.created_at = created_at; this.addresses = addresses;

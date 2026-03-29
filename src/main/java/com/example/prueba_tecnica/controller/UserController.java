@@ -31,7 +31,7 @@ public class UserController {
     // Registro de un nuevo usuario en el sistema
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        // El GlobalExceptionHandler se encarga de atrapar las excepciones ahora
+        // el GlobalExceptionHandler se encarga de atrapar las excepciones
         return ResponseEntity.ok(userService.createUser(user));
     }
 
@@ -48,7 +48,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // Punto de acceso para la autenticación de usuarios
+    // punto de acceso para la autenticación de usuarios
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         boolean authenticated = userService.authenticate(loginRequest.getTax_id(), loginRequest.getPassword());

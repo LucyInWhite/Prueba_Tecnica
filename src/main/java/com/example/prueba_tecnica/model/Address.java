@@ -1,13 +1,28 @@
 package com.example.prueba_tecnica.model;
 
-// Representación de la dirección física del usuario.
+import jakarta.persistence.*;
+
+// es una tabla de base de datos
+@Entity
+@Table(name = "addresses")
 public class Address {
+
+    // que mysql auto-incremente en id
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String street;
+
+    @Column(nullable = false)
     private String country_code;
 
     public Address() {}
+
     public Address(Integer id, String name, String street, String country_code) {
         this.id = id; this.name = name; this.street = street; this.country_code = country_code;
     }

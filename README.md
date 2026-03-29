@@ -36,6 +36,14 @@ src/main/java/com/example/prueba_tecnica/
 src/test/java/
 └── com.example.prueba_tecnica/
     └── PruebaTecnicaApplicationTests # Pruebas unitarias y de integración.
+raiz
+├── .env                         # Archivo de variables de entorno (Secret Key) [Ignorado en Git].
+├── docker-compose.yml           # Orquestación de contenedores y configuración de red interna.
+├── Dockerfile                   # Receta para construir la imagen aislada de Docker.
+├── OpenApi.json                 # Contrato de la API generado por Swagger.
+├── pom.xml                      # Archivo principal de configuración y dependencias (Maven).
+└── PostmanCollection.json       # Colección exportada con casos de prueba lista para Postman.
+
 ```
 ---
 ## 💡 Decisiones de Arquitectura e Implementación
@@ -48,8 +56,8 @@ Para garantizar la escalabilidad y robustez del sistema, se aplicaron los siguie
 
 ### 1. 🏗️ Arquitectura y Persistencia
 *   **Diseño en Capas:** Se implementó el patrón **Controller-Service-Repository**. Esta separación de responsabilidades asegura que la lógica de negocio esté aislada de la entrada de datos y del acceso a la base de datos.
-*   **Base de Datos H2 (In-Memory):** Se configuró una base de datos en memoria para permitir la **ejecución inmediata** del proyecto. El evaluador no necesita configurar servidores externos; basta con ejecutar la aplicación para que el esquema se cree automáticamente.
-*   **Validación de Datos y Reglas de Negocio:** Uso de `jakarta.validation` para interceptar datos incorrectos antes de la persistencia:
+*   **Base de Datos Relacional (MySQL):** Se integró MySQL a través de contenedores para simular un entorno productivo real, garantizando la persistencia y la integridad referencial de los datos.  
+* **Validación de Datos y Reglas de Negocio:** Uso de `jakarta.validation` para interceptar datos incorrectos antes de la persistencia:
     *   **Direcciones Diferenciadas:** Se estableció que la **dirección de casa sea obligatoria**, garantizando un punto de contacto base para el usuario, mientras que la **dirección de trabajo es opcional**, brindando flexibilidad para perfiles laborales independientes o desempleados.
     *   **Formatos Estrictos:** Validación de mayoría de edad, estructura de email y campos requeridos para asegurar la integridad de cada registro.
 
@@ -102,25 +110,61 @@ Una vez que la aplicación esté en ejecución, puedes acceder a la interfaz de 
 ---
 
 
+## 🐳 Ejecución con Docker Compose
 
-## 🐳 Ejecución con Docker
+El proyecto está orquestado para levantar tanto la base de datos MySQL como la API de forma automatizada. Asegúrate de tener Docker Desktop iniciado y sigue estos pasos en la terminal de tu preferencia:
 
-Para desplegar la aplicación en un contenedor, asegúrate de tener Docker Desktop iniciado y sigue estos pasos en la terminal:
-
-1.  **Generar el ejecutable:**
+### 1. Generar el ejecutable compilado
     ```bash
     ./mvnw clean package
     ```
-2.  **Construir la imagen:**
+> **Nota sobre las pruebas:** Se omite la ejecución automatizada de pruebas en esta fase (`-DskipTests`) debido a que el contexto de Spring requiere que la conexión a la base de datos esté activa para verificar la persistencia. La base de datos real será inicializada por Docker en el paso posterior.
+```bash
+./mvnw clean package
+```
+```bash
+     ./mvnw clean package
+```
     ```bash
-    docker build -t nombre_raiz .
+        ./mvnw clean package -DskipTests
     ```
-3.  **Iniciar el contenedor:**
+2. Construir e iniciar los contenedores
+   Este comando descargará la imagen de MySQL (si es la primera vez), construirá la imagen de la aplicación Java y levantará ambos servicios en segundo plano.
+
+Bash
+docker compose up --build -d
+3. Detener los servicios
+   Cuando termines de utilizar la API, puedes apagar y limpiar los contenedores con el siguiente comando (los datos de los usuarios persistirán de forma segura en el volumen de Docker configurado):
+
+
+## 🐳 Ejecución con Docker
+
+El proyecto está orquestado para levantar tanto la base de datos MySQL como la API de forma automatizada. Asegúrate de tener Docker Desktop iniciado y sigue estos pasos en la terminal de tu preferencia:
+1.  **Generar el ejecutable compilado:**
+    Se omite la ejecución automatizada de pruebas en esta fase (`-DskipTests`) debido a que el contexto de Spring requiere que la conexión a la base de datos esté activa para verificar la persistencia. La base de datos real será inicializada por Docker en el paso posterior.
     ```bash
-    docker run -p 8080:8080 nombre_raiz
+    ./mvnw clean package -DskipTests
+    ```
+2.  **Construir e iniciar los contenedores:**
+    Este comando descargará la imagen de MySQL (si es la primera vez), construirá la imagen de la aplicación Java y levantará ambos servicios en segundo plano.
+    ```bash
+    docker compose up --build -d
+    ```
+3.  **Detener los servicios:**
+    Cuando termines de utilizar la API, puedes apagar y limpiar los contenedores con el siguiente comando (los datos de los usuarios persistirán de forma segura en el volumen de Docker configurado):
+
+    ```bash
+    docker compose down
     ```
 
 ---
+
+> **⚠️ Nota sobre el primer arranque (Cold Start):**
+> La primera vez que se levantan los servicios, el motor de MySQL debe realizar configuraciones internas que pueden tomar entre 15 y 20 segundos. Si la aplicación de Spring Boot intenta conectarse antes de que la base de datos esté lista, el contenedor de la API podría detenerse.
+> Si al intentar acceder a los endpoints recibes un error de conexión rechazada, simplemente reinicia el contenedor de la aplicación ejecutando:
+> ```bash
+> docker compose restart app
+> ```
 -----
 
 ## 📸 Evidencia de Funcionamiento 
@@ -137,10 +181,13 @@ Para validar el correcto funcionamiento de la API, se realizaron pruebas exhaust
 
 Debido al tiempo limitado de la prueba técnica, se identificaron los siguientes puntos de mejora para una fase productiva:
 
-*   **Gestión de Secretos:** Mover la `SECRET_KEY` del archivo de configuración hacia un **Vault** o variables de entorno del servidor.
-*   **Reglas de Unicidad:** Implementar validaciones únicas para campos como `email` y `teléfono` para evitar cuentas duplicadas.
+*   **Seguridad y Gestión de Secretos:** Aunque actualmente se implementó la inyección de la `SECRET_KEY` mediante variables de entorno (archivo `.env`), la siguiente iteración consistiría en integrar un **Secrets Manager** (como AWS Secrets Manager, HashiCorp Vault o Azure Key Vault) para centralizar y rotar credenciales de forma dinámica en entornos cloud.
+*   **Optimización de Persistencia:** Implementar **índices de base de datos** en campos de alta concurrencia de búsqueda y establecer **Reglas de Unicidad** a nivel base de datos para `email` y `teléfono`, reforzando la integridad que ya se valida en la capa de negocio.
+*   **Pruebas Automatizadas:** Incrementar la cobertura de código mediante **Pruebas de Integración** con contenedores efímeros (usando Testcontainers) para validar el comportamiento real con MySQL antes de cada despliegue.
 *   **Personalización por Negocio:** Adaptar reglas de validación específicas según el plan de negocio contratado (formatos de teléfono por país, etc.). La viabilidad técnica ya fue demostrada en las validaciones actuales; su expansión es una tarea puramente iterativa.
 
 ---
 
+
 > **Observación Final:** Este proyecto fue diseñado bajo principios de **código limpio (Clean Code)** y escalabilidad, permitiendo que la lógica de negocio crezca sin comprometer la estabilidad de los servicios existentes.
+

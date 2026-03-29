@@ -1,11 +1,36 @@
 version: '3.8'
 
 services:
-  # Definimos nuestro primer contenedor (servicio)
+  #contenedor de la Base de Datos
+  database:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql # guarda los datos para que no se borren si se apaga Docker
+
+  #aplicación (modificada para conectarse a la BD)
   app:
     build: .
     container_name: prueba-tecnica-app
+    depends_on:
+      - database # que la app espere a que la BD despierte primero
     ports:
       - "8080:8080"
     env_file:
-      - .env # para la seguridad
+      - .env
+    environment:
+      #spring boot leerá esto automáticamente para conectarse a MySQL
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update #crea las tablas automáticamente
+
+volumes:
+  mysql_data:

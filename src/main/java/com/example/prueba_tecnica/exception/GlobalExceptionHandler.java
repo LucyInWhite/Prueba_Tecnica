@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    // Maneja cuando un recurso no se encuentra (ej. usuario no existe en el PATCH)
+    // explica por que la aplicacion arroja este error
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
         Map<String, String> errorResponse = new HashMap<>();
