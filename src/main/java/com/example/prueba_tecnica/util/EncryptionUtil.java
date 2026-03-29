@@ -1,17 +1,27 @@
 package com.example.prueba_tecnica.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+// Convertimos la utilidad en un componente de Spring
 // Utilidad para manejar la encriptación de datos de forma centralizada.
+@Component
 public class EncryptionUtil {
 
-    // En la vida real, esto vivira en application.properties o variables de entorno.
-    private static final String SECRET_KEY = "12345678901234567890123456789012";
+     private static String SECRET_KEY;
 
-    // Encriptación de cadenas mediante el algoritmo AES-256.
+    // Spring inyectará el valor del .env aquí
+    @Value("${SECRET_KEY}")
+    public void setSecretKey(String secretKey) {
+        EncryptionUtil.SECRET_KEY = secretKey;
+    }
+
+    // Encriptación de cadenas mediante el algoritmo AES-256
     public static String encryptPassword(String password) {
         // Evitamos un NullPointerException si intentan encriptar una contraseña vacía
         if (password == null) return null;

@@ -1,8 +1,10 @@
 package com.example.prueba_tecnica.service;
 
+import jakarta.annotation.PostConstruct;
 import com.example.prueba_tecnica.model.Address;
 import com.example.prueba_tecnica.model.User;
 import com.example.prueba_tecnica.util.EncryptionUtil;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 // Lógica principal para la gestión y validación de usuarios.
 @Service
+@DependsOn("encryptionUtil")
 public class UserService {
 
     private final List<User> users = new CopyOnWriteArrayList<>();
@@ -21,7 +24,9 @@ public class UserService {
     private static final DateTimeFormatter MADAGASCAR_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm").withZone(ZoneId.of("Indian/Antananarivo"));
 
 
-    public UserService() {
+    // Espera a que toda la configuracion y las variables de entorno esten listas antes de intentar crear usuarios
+    @PostConstruct
+    public void initData() {
         // Usuario 1
         users.add(new User(
                 UUID.randomUUID(),
