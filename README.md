@@ -62,14 +62,26 @@ Para garantizar la escalabilidad y robustez del sistema, se aplicaron los siguie
     *   **Formatos Estrictos:** Validación de mayoría de edad, estructura de email y campos requeridos para asegurar la integridad de cada registro.
 
 ---
+### 2. ⚙️ Configuración de Variables de Entorno
 
-### 2. 🌍 Gestión de Tiempos (Caso Madagascar)
+Para que el proyecto funcione correctamente, es necesario crear un archivo llamado `.env` en la raíz del proyecto. Este archivo debe contener las siguientes variables:
+
+```properties
+SECRET_KEY=
+DB_NAME=
+DB_USER=                  (Tus datos)
+DB_PASS=
+SPRING_DATASOURCE_URL:
+```
+---
+
+### 3. 🌍 Gestión de Tiempos (Caso Madagascar)
 *   **Integridad vs. Formato:** Aunque el requerimiento pedía precisión hasta minutos, el sistema **almacena los segundos** internamente. Esto previene la pérdida de precisión histórica, mientras que la salida (output) se formatea estrictamente según lo solicitado.
 *   **Resiliencia Horaria:** La visualización se configuró en **UTC referenciando a Antananarivo**. Esta decisión técnica garantiza que, ante cualquier cambio geopolítico en el huso horario de Madagascar, la referencia geográfica permanezca constante y rastreable.
 
 ---
 
-### 3. 🔍 Lógica de Filtrado Inteligente (Teléfonos)
+### 4. 🔍 Lógica de Filtrado Inteligente (Teléfonos)
 Se detectó que los registros internacionales inician con el carácter `+` (codificado como `%2B` en solicitudes URL). Se implementó una lógica dual:
 
 | Caso de Uso | Prefijo      | Comportamiento |
@@ -81,7 +93,7 @@ Se detectó que los registros internacionales inician con el carácter `+` (codi
 
 ---
 
-### 4. 🛡️ Seguridad y Manejo de Errores
+### 5. 🛡️ Seguridad y Manejo de Errores
 *   **Protección de Credenciales:** Se implementó la **encriptación de contraseñas** antes de la persistencia. Nunca se almacena información sensible en texto plano en la base de datos.
 *   **Manejo Global de Excepciones:** Mediante `@RestControllerAdvice`, se estandarizaron las respuestas de error (400, 404, 500) en formato JSON.
 *   **Mensajes con Identidad:** Los errores no son genéricos; el sistema devuelve descripciones específicas (ej. errores de formato en RFC), facilitando la integración con el Front-End o clientes externos.
@@ -110,31 +122,6 @@ Una vez que la aplicación esté en ejecución, puedes acceder a la interfaz de 
 ---
 
 
-## 🐳 Ejecución con Docker Compose
-
-El proyecto está orquestado para levantar tanto la base de datos MySQL como la API de forma automatizada. Asegúrate de tener Docker Desktop iniciado y sigue estos pasos en la terminal de tu preferencia:
-
-### 1. Generar el ejecutable compilado
-    ```bash
-    ./mvnw clean package
-    ```
-> **Nota sobre las pruebas:** Se omite la ejecución automatizada de pruebas en esta fase (`-DskipTests`) debido a que el contexto de Spring requiere que la conexión a la base de datos esté activa para verificar la persistencia. La base de datos real será inicializada por Docker en el paso posterior.
-```bash
-./mvnw clean package
-```
-```bash
-     ./mvnw clean package
-```
-    ```bash
-        ./mvnw clean package -DskipTests
-    ```
-2. Construir e iniciar los contenedores
-   Este comando descargará la imagen de MySQL (si es la primera vez), construirá la imagen de la aplicación Java y levantará ambos servicios en segundo plano.
-
-Bash
-docker compose up --build -d
-3. Detener los servicios
-   Cuando termines de utilizar la API, puedes apagar y limpiar los contenedores con el siguiente comando (los datos de los usuarios persistirán de forma segura en el volumen de Docker configurado):
 
 
 ## 🐳 Ejecución con Docker

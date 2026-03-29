@@ -27,7 +27,7 @@ services:
       - .env
     environment:
       #spring boot leerá esto automáticamente para conectarse a MySQL
-      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update #crea las tablas automáticamente
